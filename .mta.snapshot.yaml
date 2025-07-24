@@ -1,0 +1,229 @@
+_schema-version: '3.1'
+ID: Books
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+  subdomain: 7320a141trial
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - rm -rf build/dist
+        - mkdir -p build/dist
+        - rm -rf build/ui-deployer
+        - mkdir -p build/ui-deployer
+    - builder: custom
+      commands:
+        - npm install --production
+        - >-
+          bash -c "cds -v | grep 'cds-dk' || npm i --production --no-save
+          @sap/cds-dk"
+        - bash -c "export PATH=$PATH:$(pwd)/node_modules/.bin"
+        - cds build --production
+  after-all:
+    - builder: custom
+      commands:
+        - npm install
+modules:
+  - name: Books-books.books
+    type: html5
+    path: app/books.books
+    build-parameters:
+      builder: custom
+      commands:
+        - rm -rf dist-zip dist
+        - npm install
+        - >-
+          npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+          --include-task=generateCachebusterInfo
+        - mkdir dist-zip
+        - bash -c "cd dist && npx bestzip ../dist-zip/booksbooks.zip *"
+      _artifactName: booksbooks.zip
+      supported-platforms: []
+      build-result: dist-zip
+  - name: Books-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm
+      ignore:
+        - node_modules
+        - package-lock.json
+    requires:
+      - name: Books-service-uaa
+      - name: Books-service-db
+  - name: Books-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      memory: 256MB
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    build-parameters:
+      builder: npm
+      ignore:
+        - node_modules
+        - package-lock.json
+    requires:
+      - name: Books-service-uaa
+      - name: Books-service-db
+      - name: Books-service-destination
+      - name: Books-service-metadata
+      - name: Books-service-connectivity
+      - name: Books-service-logs
+  - name: Books-aux-destinations
+    type: com.sap.application.content
+    parameters:
+      content:
+        subaccount:
+          existing_destinations_policy: update
+          destinations:
+            - Authentication: OAuth2UserTokenExchange
+              Name: Books-service-uaa
+              ServiceInstanceName: Books-uaa
+              ServiceKeyName: Books-uaa-key
+              sap.cloud.service: lcap.Books
+            - Authentication: OAuth2UserTokenExchange
+              Name: Books-app-srv
+              TokenServiceInstanceName: Books-uaa
+              TokenServiceKeyName: Books-uaa-key
+              URL: ~{srv-api/srv-url}
+              sap.cloud.service: lcap.Books
+            - Name: Books-service-html5-apps-repo-host
+              ServiceInstanceName: Books-html5-apps-repo-host
+              ServiceKeyName: Books-html5-apps-repo-host-key
+              sap.cloud.service: lcap.Books
+            - Authentication: OAuth2UserTokenExchange
+              Name: Books-BooksService
+              TokenServiceInstanceName: Books-uaa
+              TokenServiceKeyName: Books-uaa-key
+              URL: ~{srv-api/srv-url}/service/BooksService
+              sap.cloud.service: lcap.Books
+              sap.applicationdevelopment.actions.enabled: false
+              sap.build.usage: CAP
+              sap.processautomation.enabled: false
+              HTML5.DynamicDestination: false
+              WebIDEEnabled: false
+              MobileEnabled: false
+              AppgyverEnabled: false
+    build-parameters:
+      no-source: true
+    requires:
+      - name: Books-service-uaa
+        parameters:
+          service-key:
+            name: Books-uaa-key
+      - name: srv-api
+      - name: Books-service-html5-apps-repo-host
+        parameters:
+          service-key:
+            name: Books-html5-apps-repo-host-key
+      - name: Books-service-destination
+        parameters:
+          content-target: true
+  - name: Books-launchpad
+    type: html5
+    path: build/launchpad
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - >-
+          npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+          --include-task=generateCachebusterInfo
+        - bash -c "cd dist && npx bestzip ../../../build/dist/launchpad.zip *"
+        - rm -rf dist
+      _artifactName: launchpad.zip
+      supported-platforms: []
+      build-result: ../../build/dist
+  - name: Books-aux-ui-deployer
+    type: com.sap.application.content
+    path: build/ui-deployer
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: Books-books.books
+          artifacts:
+            - booksbooks.zip
+          target-path: resources
+        - name: Books-launchpad
+          artifacts:
+            - launchpad.zip
+          target-path: resources
+    requires:
+      - name: Books-service-html5-apps-repo-host
+        parameters:
+          content-target: true
+resources:
+  - type: org.cloudfoundry.managed-service
+    name: Books-service-uaa
+    parameters:
+      service: xsuaa
+      service-plan: application
+      service-name: Books-uaa
+      path: xs-security.json
+      config:
+        oauth2-configuration:
+          redirect-uris:
+            - https://${subdomain}.launchpad.${default-domain}/login/*
+            - https://${subdomain}.${default-domain}/login/*
+          credential-types:
+            - binding-secret
+            - x509
+        xsappname: Books-${space}
+        role-collections:
+          - description: BookViewer
+            name: Books-BookViewer-${space}
+            role-template-references:
+              - $XSAPPNAME.BookViewer
+          - description: BookManager
+            name: Books-BookManager-${space}
+            role-template-references:
+              - $XSAPPNAME.BookManager
+  - type: org.cloudfoundry.managed-service
+    name: Books-service-db
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+      service-name: Books-db
+  - type: org.cloudfoundry.managed-service
+    name: Books-service-destination
+    parameters:
+      service: destination
+      service-plan: lite
+      service-name: Books-destination
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+  - type: org.cloudfoundry.user-provided-service
+    name: Books-service-metadata
+    parameters:
+      service: metadata
+      service-plan: standard
+      service-name: Books-metadata
+      config:
+        default-domain: ${default-domain}
+  - type: org.cloudfoundry.managed-service
+    name: Books-service-connectivity
+    parameters:
+      service: connectivity
+      service-plan: lite
+      service-name: Books-connectivity
+  - type: org.cloudfoundry.managed-service
+    name: Books-service-logs
+    parameters:
+      service: application-logs
+      service-plan: lite
+      service-name: Books-logs
+  - type: org.cloudfoundry.managed-service
+    name: Books-service-html5-apps-repo-host
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+      service-name: Books-html5-apps-repo-host

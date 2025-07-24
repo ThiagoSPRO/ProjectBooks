@@ -1,6 +1,33 @@
 {
-  "scopes": [],
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.BookViewer",
+      "description": "BookViewer"
+    },
+    {
+      "name": "$XSAPPNAME.BookManager",
+      "description": "BookManager"
+    }
+  ],
   "attributes": [],
-  "role-templates": [],
-  "authorities-inheritance": false
+  "role-templates": [
+    {
+      "name": "BookViewer",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.BookViewer"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "BookManager",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.BookManager"
+      ],
+      "attribute-references": []
+    }
+  ],
+  "xsappname": "Books",
+  "tenant-mode": "dedicated"
 }
