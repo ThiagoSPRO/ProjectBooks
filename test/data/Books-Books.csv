@@ -1,0 +1,4 @@
+ID;title;prio;descr;impact;criticality;mitig_ID;a_BusinessPartner_BusinessPartner
+4d99a7a7-0128-4e83-b9e7-fcd002276d8e;CFR non-compliance;1;Recent restructuring might violate CFR code 71;10000;2;;
+7d88370f-dbc4-427c-bb76-b9e489ee80de;SLA violation with possible termination cause;2;Repeated SLA violation on service delivery for two successive quarters;90000;3;;
+1370d2d6-4465-4514-b51f-c0334a5fc2de;Shipment violating export control;1;Violation of export and trade control with unauthorized downloads;200000;2;;
