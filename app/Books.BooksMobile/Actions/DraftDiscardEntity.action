@@ -1,0 +1,19 @@
+{
+    "_Type": "Action.Type.ODataService.DraftEnabled.Discard",
+    "Target": {
+        "Service": "/BooksMobile/Services/BooksService.service",
+        "EntitySet": "Books",
+        "ReadLink": "{@odata.readLink}"
+    },
+    "ShowActivityIndicator": true,
+    "ActionResult": {
+        "_Name": "update"
+    },
+    "OnSuccess": {
+        "Name": "/BooksMobile/Actions/UpdateEntitySuccessMessage.action",
+        "Properties": {
+            "Message": "Draft Discarded"
+        }
+    },
+    "OnFailure": "/BooksMobile/Actions/UpdateEntityFailureMessage.action"
+}

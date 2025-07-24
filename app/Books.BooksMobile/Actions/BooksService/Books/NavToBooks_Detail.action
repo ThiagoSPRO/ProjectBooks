@@ -1,0 +1,4 @@
+{
+    "_Type": "Action.Type.Navigation",
+    "PageToOpen": "/BooksMobile/Pages/BooksService_Books/Books_Detail.page"
+}

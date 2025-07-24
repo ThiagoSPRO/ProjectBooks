@@ -1,0 +1,27 @@
+{
+    "ParentLink": {
+        "Property": "books",
+        "Target": {
+            "EntitySet": "Mitigations",
+            "ReadLink": "{@odata.readLink}"
+        }
+    },
+    "OnFailure": "/BooksMobile/Actions/CreateEntityFailureMessage.action",
+    "OnSuccess": "/BooksMobile/Actions/CreateEntitySuccessMessage.action",
+    "Properties": {
+        "title": "#Page:Mitigations_CreateBooks/#Control:title/#Value",
+        "prio": "#Page:Mitigations_CreateBooks/#Control:prio/#Value",
+        "descr": "#Page:Mitigations_CreateBooks/#Control:descr/#Value",
+        "impact": "#Page:Mitigations_CreateBooks/#Control:impact/#Value",
+        "criticality": "#Page:Mitigations_CreateBooks/#Control:criticality/#Value",
+        "a_BusinessPartner_BusinessPartner": "#Page:Mitigations_CreateBooks/#Control:a_BusinessPartner_BusinessPartner/#SelectedValue"
+    },
+    "Target": {
+        "EntitySet": "Books",
+        "Service": "/BooksMobile/Services/BooksService.service"
+    },
+    "ActionResult": {
+        "_Name": "create"
+    },
+    "_Type": "Action.Type.ODataService.CreateRelatedEntity"
+}

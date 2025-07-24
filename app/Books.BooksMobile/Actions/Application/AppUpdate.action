@@ -1,0 +1,8 @@
+{
+    "_Type": "Action.Type.ApplicationUpdate",
+    "ActionResult": {
+        "_Name": "AppUpdate"
+    },
+    "OnFailure": "/BooksMobile/Rules/Application/AppUpdateFailure.js",
+    "OnSuccess": "/BooksMobile/Rules/Application/AppUpdateSuccess.js"
+}

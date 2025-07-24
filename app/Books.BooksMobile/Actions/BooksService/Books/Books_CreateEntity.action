@@ -1,0 +1,21 @@
+{
+    "CreateLinks": [],
+    "OnFailure": "/BooksMobile/Actions/CreateEntityFailureMessage.action",
+    "OnSuccess": "/BooksMobile/Actions/CreateEntitySuccessMessage.action",
+    "Properties": {
+        "title": "#Page:Books_Create/#Control:title/#Value",
+        "prio": "#Page:Books_Create/#Control:prio/#Value",
+        "descr": "#Page:Books_Create/#Control:descr/#Value",
+        "impact": "#Page:Books_Create/#Control:impact/#Value",
+        "criticality": "#Page:Books_Create/#Control:criticality/#Value",
+        "a_BusinessPartner_BusinessPartner": "#Page:Books_Create/#Control:a_BusinessPartner_BusinessPartner/#SelectedValue"
+    },
+    "Target": {
+        "EntitySet": "Books",
+        "Service": "/BooksMobile/Services/BooksService.service"
+    },
+    "ActionResult": {
+        "_Name": "create"
+    },
+    "_Type": "Action.Type.ODataService.CreateEntity"
+}

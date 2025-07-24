@@ -1,0 +1,12 @@
+{
+    "PopoverItems": [{
+            "Title": "Add Books",
+            "OnPress": "/BooksMobile/Rules/BooksService/Mitigations/NavToMitigations_CreateBooks.js"
+        },
+        {
+            "Title": "Delete",
+            "OnPress": "/BooksMobile/Rules/BooksService/Mitigations/Mitigations_DeleteConfirmation.js"
+        }
+    ],
+    "_Type": "Action.Type.PopoverMenu"
+}

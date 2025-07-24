@@ -1,0 +1,6 @@
+{
+    "ModalPageFullscreen": false,
+    "ModalPage": true,
+    "PageToOpen": "/BooksMobile/Pages/BooksService_Mitigations/Mitigations_Edit.page",
+    "_Type": "Action.Type.Navigation"
+}

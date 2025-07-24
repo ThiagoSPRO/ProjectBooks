@@ -1,0 +1,10 @@
+{
+    "DestinationName": "../service/BooksService/",
+    "OfflineEnabled": false,
+    "LanguageURLParam": "",
+    "OnlineOptions": {},
+    "OfflineOptions": {},
+    "PathSuffix": "",
+    "SourceType": "Cloud",
+    "ServiceUrl":""
+}

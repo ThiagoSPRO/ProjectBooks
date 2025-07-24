@@ -1,0 +1,22 @@
+{
+    "_Type": "Action.Type.ODataService.UpdateEntity",
+    "Target": {
+        "EntitySet": "Books",
+        "Service": "/BooksMobile/Services/BooksService.service",
+        "ReadLink": "{@odata.readLink}"
+    },
+    "Properties": {
+        "title": "#Page:Books_Edit/#Control:title/#Value",
+        "prio": "#Page:Books_Edit/#Control:prio/#Value",
+        "descr": "#Page:Books_Edit/#Control:descr/#Value",
+        "impact": "#Page:Books_Edit/#Control:impact/#Value",
+        "criticality": "#Page:Books_Edit/#Control:criticality/#Value",
+        "a_BusinessPartner_BusinessPartner": "#Page:Books_Edit/#Control:a_BusinessPartner_BusinessPartner/#SelectedValue"
+    },
+    "UpdateLinks": [],
+    "ActionResult": {
+        "_Name": "update"
+    },
+    "OnSuccess": "/BooksMobile/Actions/UpdateEntitySuccessMessage.action",
+    "OnFailure": "/BooksMobile/Actions/UpdateEntityFailureMessage.action"
+}
